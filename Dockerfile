@@ -21,8 +21,6 @@ COPY package*.json ./
 # Install app dependencies including devDependencies if build scripts need them
 # Mediasoup build might happen here during postinstall scripts
 RUN npm install
-# If devDependencies were only needed for build, prune them:
-RUN npm prune --omit=dev
 
 # Bundle app source (including the 'public' directory)
 COPY . .

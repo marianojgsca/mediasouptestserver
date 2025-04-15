@@ -361,21 +361,6 @@ function setupRecvTransportListeners() {
     });
 }
 
-// Modify createTransport functions to call setupListeners
-async function createSendTransport() {
-    // ... (creation logic) ...
-    sendTransport = device.createSendTransport(transportInfo);
-    setupSendTransportListeners(); // Call setup after creation
-    // ...
-}
-async function createRecvTransport() {
-    // ... (creation logic) ...
-    recvTransport = device.createRecvTransport(transportInfo);
-    setupRecvTransportListeners(); // Call setup after creation
-    // ...
-}
-
-
 /** Gets and publishes local camera and microphone tracks. */
 async function publishLocalMedia() {
     if (!sendTransport || !device) { alert('Cannot publish: Send transport or device not ready.'); return; }
