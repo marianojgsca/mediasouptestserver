@@ -1,0 +1,65 @@
+services:
+  # Redis Service (remains the same)
+  redis:
+    image: redis:7-alpine
+    container_name: mediasoup_redis_dev # Use a different name if needed
+    command: redis-server --save "" --appendonly no
+    ports:
+      - "127.0.0.1:6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - mediasoup-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Mediasoup Application Service (DEVELOPMENT CONFIGURATION)
+  app:
+    build: . # Still build initially to install npm dependencies in the container
+    container_name: mediasoup_app_dev # Use a different name if needed
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      # --- DEVELOPMENT CHANGES START ---
+      # Mount your local source code into the container's working directory
+      # Changes you make locally will be reflected inside the container instantly.
+      - ./:/usr/src/app
+      # Mount an anonymous volume for node_modules.
+      # This prevents your local node_modules (if any) from overwriting the
+      # node_modules installed INSIDE the container during the build. Crucial!
+      - /usr/src/app/node_modules
+      # Mount certificates (read-only) - Still needed
+      - ./certs:/usr/src/app/certs:ro
+      # --- DEVELOPMENT CHANGES END ---
+    ports:
+      # Map the HTTPS/WSS port
+      - "${PORT:-3000}:${PORT:-3000}"
+      # Map the Mediasoup UDP RTP port range (CRITICAL) - Uses .env values
+      - "${MEDIASOUP_RTC_MIN_PORT:-10000}-${MEDIASOUP_RTC_MAX_PORT:-10999}:${MEDIASOUP_RTC_MIN_PORT:-10000}-${MEDIASOUP_RTC_MAX_PORT:-10999}/udp"
+      # Map the Mediasoup TCP RTP port range (If TCP fallback needed/enabled)
+      # - "${MEDIASOUP_RTC_MIN_PORT:-10000}-${MEDIASOUP_RTC_MAX_PORT:-10999}:${MEDIASOUP_RTC_MIN_PORT:-10000}-${MEDIASOUP_RTC_MAX_PORT:-10999}/tcp"
+    environment:
+      - NODE_ENV=development # Explicitly set to development
+      - REDIS_HOST=redis
+      # Read other variables from the .env file via docker-compose itself
+    env_file:
+      - .env # Ensure docker-compose reads the .env for port/IP vars etc.
+    # --- DEVELOPMENT CHANGE: Use nodemon ---
+    command: npm run dev # Uses the "dev" script from package.json (nodemon server.js)
+    restart: unless-stopped # Restart if it crashes, but nodemon handles file changes
+    networks:
+      - mediasoup-net
+
+# Define the network
+networks:
+  mediasoup-net:
+    driver: bridge
+
+# Define named volume for Redis persistence
+volumes:
+  redis_data:

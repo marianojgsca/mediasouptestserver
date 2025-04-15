@@ -1,0 +1,10 @@
+# .dockerignore
+node_modules
+npm-debug.log
+*.log
+.env
+certs
+# Ignore client build artifacts and node_modules
+public/node_modules
+public/dist
+public/.parcel-cache

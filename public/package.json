@@ -1,0 +1,17 @@
+{
+  "name": "mediasoup-client-test-app",
+  "version": "1.0.0",
+  "description": "Simple client for mediasoup server",
+  "scripts": {
+    "start": "parcel index.html --https --cert ../certs/cert.pem --key ../certs/key.pem",
+    "build": "parcel build index.html"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mediasoup-client": "3.9.5"
+  },
+  "devDependencies": {
+    "parcel": "^2.14.4"
+  }
+}

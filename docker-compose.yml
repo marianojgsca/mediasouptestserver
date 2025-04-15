@@ -1,0 +1,61 @@
+services:
+  # Redis Service
+  redis:
+    image: redis:7-alpine
+    container_name: mediasoup_redis
+    command: redis-server --save "" --appendonly no # Disable persistence for testing
+    ports:
+      - "127.0.0.1:6379:6379" # Expose Redis only on localhost for security
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - mediasoup-net
+    healthcheck: # Added healthcheck for Redis
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Mediasoup Application Service
+  app:
+    build: .
+    container_name: mediasoup_app
+    depends_on:
+      redis: # Ensure Redis is healthy before starting app
+        condition: service_healthy
+    volumes:
+      # Mount certificates (read-only) - Generate these on the host first!
+      - ./certs:/usr/src/app/certs:ro
+      # Mount the environment file (read-only)
+      - ./.env:/usr/src/app/.env:ro
+    ports:
+      # Map the HTTPS/WSS port
+      - "${PORT:-3000}:${PORT:-3000}"
+      # Map the Mediasoup UDP RTP port range (CRITICAL) - Uses .env values
+      - "${MEDIASOUP_RTC_MIN_PORT:-10000}-${MEDIASOUP_RTC_MAX_PORT:-10999}:${MEDIASOUP_RTC_MIN_PORT:-10000}-${MEDIASOUP_RTC_MAX_PORT:-10999}/udp"
+      # Map the Mediasoup TCP RTP port range (If TCP fallback needed/enabled)
+      # - "${MEDIASOUP_RTC_MIN_PORT:-10000}-${MEDIASOUP_RTC_MAX_PORT:-10999}:${MEDIASOUP_RTC_MIN_PORT:-10000}-${MEDIASOUP_RTC_MAX_PORT:-10999}/tcp"
+    environment:
+      # Ensure NODE_ENV is set (can also be in .env)
+      - NODE_ENV=${NODE_ENV:-production}
+      # Let app connect to Redis via service name
+      - REDIS_HOST=redis
+      # MEDIASOUP_ANNOUNCED_IP is read from the mounted .env file
+    restart: unless-stopped
+    networks:
+      - mediasoup-net
+    # Optional: Increase file descriptor limits
+    # ulimits:
+    #   nofile:
+    #     soft: 65536
+    #     hard: 65536
+
+# Define the network
+networks:
+  mediasoup-net:
+    driver: bridge
+
+# Define named volume for Redis persistence
+volumes:
+  redis_data:

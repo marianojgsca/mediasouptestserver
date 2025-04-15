@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mediasoup Test Client</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <!-- REMOVED mediasoup-client CDN script tag -->
+</head>
+<body>
+    <h1>Mediasoup Test Client</h1>
+
+    <div class="controls">
+        <label for="serverUrl">Server WSS URL:</label>
+        <input type="text" id="serverUrl" value=""> <!-- Value set by JS -->
+
+        <label for="roomId">Room ID:</label>
+        <input type="text" id="roomId" value="test-room-1">
+
+        <label for="peerId">Peer ID:</label>
+        <input type="text" id="peerId" value=""> <!-- Value set by JS -->
+
+        <button id="btnJoin">Join Room</button>
+        <button id="btnLeave" disabled>Leave Room</button>
+        <button id="btnPublish" disabled>Publish Cam/Mic</button>
+        <button id="btnStopPublish" disabled>Stop Publishing</button>
+        <span id="connectionStatus" class="status-disconnected">Disconnected</span>
+    </div>
+
+    <div class="media-container">
+        <div class="video-wrapper">
+            <h2>Local Video</h2>
+            <video id="localVideo" autoplay muted playsinline></video>
+        </div>
+        <div id="remoteVideos" class="remote-videos-wrapper">
+            <h2>Remote Videos</h2>
+            <!-- Remote videos will be added here -->
+        </div>
+    </div>
+
+    <div class="logs">
+        <h2>Logs</h2>
+        <pre id="logOutput"></pre>
+    </div>
+
+    <!-- Point Parcel to your source JS file, using type="module" -->
+    <script src="./client.js" type="module"></script>
+</body>
+</html>

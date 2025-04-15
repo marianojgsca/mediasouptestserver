@@ -1,0 +1,178 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    padding: 1em;
+    line-height: 1.5;
+    background-color: #f4f7f6;
+    color: #333;
+}
+
+h1, h2 {
+    color: #005f73;
+    border-bottom: 2px solid #94d2bd;
+    padding-bottom: 0.3em;
+    margin-bottom: 0.7em;
+}
+
+.controls {
+    margin-bottom: 1.5em;
+    padding: 1em;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.controls label {
+    margin-right: 0.5em;
+    font-weight: bold;
+    color: #0a9396;
+}
+
+.controls input[type="text"] {
+    padding: 8px 10px;
+    margin-right: 1em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    min-width: 150px;
+}
+
+.controls button {
+    padding: 10px 18px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    background-color: #0a9396;
+    color: white;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+
+.controls button:hover:not(:disabled) {
+    background-color: #005f73;
+}
+
+.controls button:disabled {
+    background-color: #a0aec0;
+    cursor: not-allowed;
+}
+
+.status-connected {
+    color: #2f855a;
+    font-weight: bold;
+    margin-left: auto; /* Push status to the right */
+    padding: 5px 10px;
+    background-color: #c6f6d5;
+    border-radius: 4px;
+}
+
+.status-disconnected {
+    color: #c53030;
+    font-weight: bold;
+    margin-left: auto;
+    padding: 5px 10px;
+    background-color: #fed7d7;
+    border-radius: 4px;
+}
+
+
+.media-container {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 1.5em;
+}
+
+.video-wrapper, .remote-videos-wrapper {
+    border: 1px solid #e2e8f0;
+    padding: 1em;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    flex: 1; /* Allow flexible growth */
+    min-width: 340px; /* Minimum width before wrapping */
+}
+
+video, audio {
+    width: 100%; /* Take full width of container */
+    height: auto;
+    background-color: black;
+    border-radius: 5px;
+    display: block; /* Remove extra space below video */
+}
+audio {
+    max-width: 320px; /* Limit audio player width */
+}
+
+.remote-video-container {
+    margin-bottom: 1.5em;
+    padding-bottom: 1em;
+    border-bottom: 1px dashed #ccc;
+}
+.remote-video-container:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+.remote-video-container h3 {
+    margin-top: 0;
+    font-size: 1em;
+    color: #555;
+}
+
+.logs {
+    margin-top: 2em;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background-color: #2d3748; /* Dark background */
+    color: #e2e8f0; /* Light text */
+    padding: 1em;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.logs h2 {
+    color: #94d2bd;
+    border-bottom-color: #4a5568;
+    margin-top: 0;
+}
+#logOutput {
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-size: 0.85em;
+    max-height: 300px;
+    overflow-y: auto;
+    white-space: pre-wrap; /* Wrap long lines */
+    word-break: break-all;
+    margin: 0;
+    padding: 0;
+}
+
+/* Basic responsiveness */
+@media (max-width: 768px) {
+    .controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    .controls label {
+        margin-right: 0;
+        margin-bottom: 5px;
+        display: block; /* Labels on own line */
+    }
+    .controls input[type="text"] {
+        margin-right: 0;
+        width: calc(100% - 22px); /* Adjust for padding/border */
+    }
+     .controls button {
+        width: 100%;
+     }
+    .status-connected, .status-disconnected {
+        margin-left: 0; /* Remove auto margin */
+        text-align: center;
+        margin-top: 10px;
+    }
+     .media-container {
+        flex-direction: column;
+     }
+}
